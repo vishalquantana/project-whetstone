@@ -1,0 +1,752 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Whetstone — clickable critical-path mockup</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Space+Grotesk:wght@500;600;700&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet" />
+<style>
+  :root{
+    --mist:#E7EBEA;        /* cool concrete page bg */
+    --mist-2:#DBE0DF;
+    --chalk:#F8FAF9;       /* near-white surfaces */
+    --petrol:#0E3A38;      /* deep teal-petrol brand / dark screens */
+    --petrol-2:#15514C;    /* raised petrol surface */
+    --petrol-3:#1E635C;
+    --graphite:#5C6B69;    /* muted teal-grey text */
+    --graphite-2:#8A9794;
+    --ink:#0B1F1E;         /* near-black text on light */
+    --coral:#FF5470;       /* the one spark: effort + streak */
+    --coral-soft:#ff547015;
+    --line:#C9D1CF;
+    --line-dark:#2c5a55;
+    --radius:18px;
+    --shadow:0 22px 50px -28px rgba(11,31,30,.55);
+    --shadow-soft:0 10px 30px -20px rgba(11,31,30,.45);
+    --ease:cubic-bezier(.22,.9,.3,1);
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  html{-webkit-text-size-adjust:100%}
+  body{
+    font-family:"Inter",system-ui,sans-serif;
+    background:
+      radial-gradient(1200px 600px at 80% -10%, #eef2f1 0%, transparent 60%),
+      var(--mist);
+    color:var(--ink);
+    line-height:1.5;
+    -webkit-font-smoothing:antialiased;
+    min-height:100vh;
+  }
+  .mono{font-family:"Space Mono",monospace}
+  .grotesk{font-family:"Space Grotesk",sans-serif}
+
+  /* ---------- page chrome ---------- */
+  .wrap{max-width:1120px;margin:0 auto;padding:40px 28px 64px}
+  .masthead{display:flex;justify-content:space-between;align-items:flex-end;gap:24px;flex-wrap:wrap;margin-bottom:30px}
+  .brand{display:flex;align-items:center;gap:14px}
+  .mark{
+    width:46px;height:46px;border-radius:13px;flex:none;
+    background:var(--petrol);
+    display:grid;place-items:center;position:relative;overflow:hidden;
+    box-shadow:var(--shadow-soft);
+  }
+  /* the "edge being honed" — a sharpened blade glint */
+  .mark::before{
+    content:"";position:absolute;inset:0;
+    background:linear-gradient(118deg,transparent 38%, #6fe0d2 48%, #ffffff 50%, #6fe0d2 52%, transparent 62%);
+    opacity:.9;
+  }
+  .mark span{position:relative;color:var(--chalk);font-weight:700;font-size:22px}
+  .brand h1{font-family:"Space Grotesk";font-size:26px;letter-spacing:-.02em;font-weight:700;line-height:1}
+  .brand p{font-size:13px;color:var(--graphite);margin-top:5px}
+  .premise{max-width:300px;text-align:right;font-size:13px;color:var(--graphite)}
+  .premise b{color:var(--ink);font-weight:600}
+
+  /* ---------- tabs ---------- */
+  .tabs{display:flex;gap:8px;background:var(--mist-2);padding:6px;border-radius:14px;width:fit-content;margin:0 auto 8px;border:1px solid var(--line)}
+  .tab{
+    appearance:none;border:0;cursor:pointer;background:transparent;
+    font-family:"Space Grotesk";font-weight:600;font-size:14.5px;color:var(--graphite);
+    padding:11px 20px;border-radius:10px;display:flex;align-items:center;gap:9px;
+    transition:.25s var(--ease);
+  }
+  .tab .dot{width:8px;height:8px;border-radius:50%;background:var(--graphite-2);transition:.25s}
+  .tab small{font-weight:400;font-size:11.5px;opacity:.7}
+  .tab[aria-selected="true"]{background:var(--petrol);color:var(--chalk);box-shadow:var(--shadow-soft)}
+  .tab[aria-selected="true"] .dot{background:var(--coral)}
+  .tab:focus-visible{outline:2.5px solid var(--coral);outline-offset:2px}
+  .concept-line{text-align:center;color:var(--graphite);font-size:13px;margin-bottom:26px}
+
+  /* ---------- step rail ---------- */
+  .rail{display:flex;align-items:center;justify-content:center;gap:0;margin:0 auto 26px;max-width:720px;flex-wrap:wrap}
+  .rstep{display:flex;align-items:center;gap:0}
+  .rbtn{
+    appearance:none;border:0;background:transparent;cursor:pointer;
+    display:flex;align-items:center;gap:9px;padding:6px 4px;border-radius:9px;
+  }
+  .rbtn:focus-visible{outline:2.5px solid var(--coral);outline-offset:2px}
+  .rnum{
+    width:26px;height:26px;border-radius:50%;flex:none;
+    display:grid;place-items:center;font-family:"Space Mono";font-size:12px;font-weight:700;
+    background:var(--chalk);color:var(--graphite);border:1.5px solid var(--line);transition:.3s var(--ease);
+  }
+  .rlabel{font-size:12.5px;color:var(--graphite);font-weight:500;white-space:nowrap;transition:.3s}
+  .rbtn[data-state="done"] .rnum{background:var(--petrol);color:var(--chalk);border-color:var(--petrol)}
+  .rbtn[data-state="active"] .rnum{background:var(--coral);color:#fff;border-color:var(--coral);box-shadow:0 0 0 5px var(--coral-soft)}
+  .rbtn[data-state="active"] .rlabel{color:var(--ink);font-weight:700}
+  .rconn{width:34px;height:2px;background:var(--line);border-radius:2px}
+  @media(max-width:760px){ .rlabel{display:none} .rconn{width:18px} }
+
+  /* ---------- stage: phone + annotation ---------- */
+  .stage{display:grid;grid-template-columns:330px 1fr;gap:48px;align-items:start;justify-content:center}
+  @media(max-width:880px){ .stage{grid-template-columns:1fr;justify-items:center;gap:34px} }
+
+  .phone-col{display:flex;flex-direction:column;align-items:center;gap:18px}
+  .phone{
+    width:330px;height:680px;border-radius:42px;padding:11px;flex:none;
+    background:linear-gradient(160deg,#21302e,#0a1817);
+    box-shadow:var(--shadow), inset 0 0 0 2px #324d49;
+    position:relative;
+  }
+  .notch{position:absolute;top:11px;left:50%;transform:translateX(-50%);width:120px;height:24px;background:#0a1817;border-radius:0 0 16px 16px;z-index:6}
+  .screen{
+    width:100%;height:100%;border-radius:32px;overflow:hidden;position:relative;
+    display:flex;flex-direction:column;
+    background:var(--chalk);
+  }
+  .screen.dark{background:var(--petrol);color:var(--chalk)}
+  .statusbar{display:flex;justify-content:space-between;align-items:center;padding:14px 22px 4px;font-family:"Space Mono";font-size:12px;font-weight:700;letter-spacing:-.02em}
+  .screen.dark .statusbar{color:var(--chalk)}
+  .screen.light .statusbar{color:var(--ink)}
+  .sb-dots{display:flex;gap:4px;align-items:center}
+  .sb-dots i{width:5px;height:5px;border-radius:50%;background:currentColor;opacity:.6;font-style:normal}
+  .sb-bat{width:22px;height:11px;border:1.5px solid currentColor;border-radius:3px;position:relative;opacity:.8}
+  .sb-bat::after{content:"";position:absolute;inset:1.5px;right:6px;background:currentColor;border-radius:1px}
+
+  .appview{flex:1;display:flex;flex-direction:column;padding:6px 22px 22px;overflow:auto}
+  .appview::-webkit-scrollbar{width:0}
+
+  /* app bar inside screen */
+  .appbar{display:flex;justify-content:space-between;align-items:center;padding:10px 0 18px}
+  .streak{display:inline-flex;align-items:center;gap:6px;font-family:"Space Mono";font-weight:700;font-size:13px;
+    padding:5px 11px;border-radius:999px}
+  .screen.dark .streak{background:#ffffff10;color:var(--chalk)}
+  .screen.light .streak{background:var(--coral-soft);color:var(--coral)}
+  .streak .fl{filter:saturate(1.2)}
+  .gear{width:30px;height:30px;border-radius:50%;display:grid;place-items:center;font-size:15px}
+  .screen.dark .gear{background:#ffffff12;color:var(--chalk)}
+  .screen.light .gear{background:#0b1f1e0d;color:var(--graphite)}
+
+  .eyebrow{font-family:"Space Mono";font-size:11px;font-weight:700;letter-spacing:.16em;text-transform:uppercase}
+  .screen.dark .eyebrow{color:#7fd8cb}
+  .screen.light .eyebrow{color:var(--coral)}
+
+  /* claim / prompt card */
+  .claim{font-family:"Space Grotesk";font-weight:600;letter-spacing:-.02em;line-height:1.12;margin-top:14px}
+  .claim.lg{font-size:31px}
+  .sub{font-size:14px;margin-top:14px}
+  .screen.dark .sub{color:#aecdc8}
+  .screen.light .sub{color:var(--graphite)}
+  .meta{display:flex;gap:8px;align-items:center;font-family:"Space Mono";font-size:11.5px;margin-top:18px}
+  .screen.dark .meta{color:#86b3ac}
+  .screen.light .meta{color:var(--graphite-2)}
+  .meta b{color:inherit}
+
+  .spacer{flex:1}
+
+  /* lock chip */
+  .lock{display:flex;gap:9px;align-items:flex-start;font-size:12.5px;padding:11px 13px;border-radius:12px;margin-top:14px;line-height:1.4}
+  .screen.dark .lock{background:#0000002e;color:#bfe0db}
+  .screen.light .lock{background:#0b1f1e08;color:var(--graphite)}
+  .lock .ic{font-size:14px;line-height:1.2}
+
+  /* textarea */
+  .ta{width:100%;margin-top:14px;border-radius:14px;padding:14px;font-family:inherit;font-size:14px;line-height:1.5;resize:none;min-height:150px;transition:.2s}
+  .screen.dark .ta{background:#06201e;border:1.5px solid var(--line-dark);color:var(--chalk)}
+  .screen.dark .ta::placeholder{color:#6fa39c}
+  .screen.light .ta{background:#fff;border:1.5px solid var(--line);color:var(--ink)}
+  .ta:focus{outline:none;border-color:var(--coral);box-shadow:0 0 0 4px var(--coral-soft)}
+  .counter{font-family:"Space Mono";font-size:11px;margin-top:8px;display:flex;justify-content:space-between}
+  .screen.dark .counter{color:#86b3ac}
+  .screen.light .counter{color:var(--graphite-2)}
+  .counter .ok{color:var(--coral)}
+
+  /* buttons */
+  .btn{
+    appearance:none;border:0;cursor:pointer;width:100%;margin-top:16px;
+    font-family:"Space Grotesk";font-weight:700;font-size:15px;letter-spacing:-.01em;
+    padding:15px;border-radius:14px;background:var(--coral);color:#fff;transition:.2s var(--ease);
+  }
+  .btn:hover{transform:translateY(-1px);filter:brightness(1.04)}
+  .btn:active{transform:translateY(0)}
+  .btn:disabled{cursor:not-allowed;opacity:1;background:#9aa8a5;color:#eef2f1}
+  .screen.dark .btn:disabled{background:#1c4a45;color:#5f8a84}
+  .btn:focus-visible{outline:3px solid #fff;outline-offset:2px}
+  .btn.ghost{background:transparent;margin-top:10px;font-size:13.5px;font-weight:600;padding:9px}
+  .screen.dark .btn.ghost{color:#9fd3cb}
+  .screen.light .btn.ghost{color:var(--graphite)}
+  .btn.ghost:hover{transform:none;text-decoration:underline}
+
+  .backrow{display:flex;align-items:center;gap:10px;padding:6px 0 4px;font-size:13px}
+  .screen.dark .backrow{color:#9fd3cb}
+  .screen.light .backrow{color:var(--graphite)}
+  .backrow .chev{cursor:pointer;font-size:18px;line-height:1}
+  .backrow .ctx{font-weight:600;font-size:12.5px;opacity:.85;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+
+  /* sparring thread */
+  .thread{display:flex;flex-direction:column;gap:12px;margin-top:6px}
+  .bubble{max-width:88%;padding:13px 15px;border-radius:16px;font-size:13.5px;line-height:1.45}
+  .bubble.ai{align-self:flex-start;border-bottom-left-radius:5px;background:#0000002e;color:#e7f5f2}
+  .bubble.ai .who{font-family:"Space Mono";font-size:10px;letter-spacing:.12em;text-transform:uppercase;color:#7fd8cb;display:block;margin-bottom:6px;font-weight:700}
+  .bubble.me{align-self:flex-end;border-bottom-right-radius:5px;background:var(--coral);color:#fff}
+  .blocked{font-size:11.5px;text-align:center;margin-top:12px;color:#6fa39c;font-family:"Space Mono"}
+  .blocked s{opacity:.6}
+
+  .inputbar{display:flex;gap:8px;margin-top:14px;align-items:flex-end}
+  .inputbar .ta{margin-top:0;min-height:54px;flex:1}
+  .send{flex:none;width:50px;height:50px;border-radius:13px;border:0;background:var(--coral);color:#fff;font-size:19px;cursor:pointer;transition:.2s}
+  .send:hover{filter:brightness(1.06)}
+  .send:disabled{background:#1c4a45;color:#5f8a84;cursor:not-allowed}
+
+  /* score */
+  .scorerow{margin-top:18px}
+  .scorerow .lab{display:flex;justify-content:space-between;font-family:"Space Mono";font-size:12px;font-weight:700;margin-bottom:6px}
+  .screen.dark .scorerow .lab{color:#cde7e2}
+  .bar{height:9px;border-radius:6px;background:#0000002e;overflow:hidden}
+  .screen.light .bar{background:#0b1f1e10}
+  .bar i{display:block;height:100%;border-radius:6px;background:linear-gradient(90deg,#ff7a5c,var(--coral));width:0;transition:width .9s var(--ease)}
+  .callout{margin-top:20px;padding:14px;border-radius:13px;font-size:13px;line-height:1.45}
+  .screen.dark .callout{background:#0000002e}
+  .screen.light .callout{background:#0b1f1e08;color:var(--graphite)}
+  .callout .tag{font-family:"Space Mono";font-size:10px;letter-spacing:.12em;text-transform:uppercase;color:var(--coral);font-weight:700;display:block;margin-bottom:6px}
+  .callout b{color:inherit}
+
+  /* gap report list (recall) */
+  .gaps{display:flex;flex-direction:column;gap:10px;margin-top:18px}
+  .gap{display:flex;gap:11px;padding:13px;border-radius:12px;font-size:13.5px;line-height:1.4;align-items:flex-start}
+  .gap.hit{background:#16887018}
+  .gap.miss{background:var(--coral-soft)}
+  .gap .ico{width:22px;height:22px;border-radius:50%;flex:none;display:grid;place-items:center;font-size:12px;font-weight:700;color:#fff;margin-top:1px}
+  .gap.hit .ico{background:#16886e}
+  .gap.miss .ico{background:var(--coral)}
+  .gap .k{font-weight:600;display:block;margin-bottom:1px}
+  .gap small{color:var(--graphite);font-size:12px}
+
+  /* re-encode cards + spacing */
+  .recard{padding:13px;border-radius:12px;background:#fff;border:1.5px solid var(--line);font-size:13px;margin-top:10px;line-height:1.45}
+  .recard b{display:block;margin-bottom:3px}
+  .schedule{display:flex;align-items:center;gap:14px;margin-top:18px;padding:14px;border-radius:13px;background:var(--petrol);color:var(--chalk)}
+  .schedule .big{font-family:"Space Grotesk";font-weight:700;font-size:20px;line-height:1}
+  .schedule .lab{font-family:"Space Mono";font-size:10px;letter-spacing:.1em;text-transform:uppercase;color:#7fd8cb;margin-bottom:4px}
+  .curve{flex:1;display:flex;align-items:flex-end;gap:4px;height:38px}
+  .curve i{flex:1;background:#7fd8cb;border-radius:2px;opacity:.85}
+
+  .retention{margin-top:16px}
+  .retention .lab{display:flex;justify-content:space-between;font-family:"Space Mono";font-size:12px;font-weight:700;margin-bottom:6px;color:var(--graphite)}
+
+  /* toast */
+  .toast{
+    position:absolute;left:22px;right:22px;bottom:22px;background:var(--ink);color:var(--chalk);
+    padding:13px 16px;border-radius:13px;font-size:13.5px;font-weight:500;display:flex;align-items:center;gap:10px;
+    box-shadow:0 14px 30px -14px rgba(0,0,0,.6);transform:translateY(140%);transition:transform .4s var(--ease);z-index:7;
+  }
+  .toast.show{transform:translateY(0)}
+  .toast b{color:var(--coral)}
+
+  /* phone controls */
+  .controls{display:flex;align-items:center;gap:14px}
+  .nav{
+    appearance:none;border:1.5px solid var(--line);background:var(--chalk);cursor:pointer;
+    font-family:"Space Grotesk";font-weight:600;font-size:13.5px;color:var(--ink);
+    padding:10px 18px;border-radius:11px;transition:.2s}
+  .nav:hover:not(:disabled){border-color:var(--petrol);transform:translateY(-1px)}
+  .nav:disabled{opacity:.4;cursor:not-allowed}
+  .nav:focus-visible{outline:2.5px solid var(--coral);outline-offset:2px}
+  .tip{font-size:12px;color:var(--graphite-2);font-family:"Space Mono"}
+
+  /* annotation panel */
+  .note{position:sticky;top:30px;max-width:420px}
+  .note .kicker{font-family:"Space Mono";font-size:11px;letter-spacing:.16em;text-transform:uppercase;color:var(--coral);font-weight:700}
+  .note h2{font-family:"Space Grotesk";font-size:30px;letter-spacing:-.02em;line-height:1.08;margin:12px 0 6px;font-weight:700}
+  .note .screenname{font-family:"Space Mono";font-size:13px;color:var(--graphite);margin-bottom:22px}
+  .note ul{list-style:none;display:flex;flex-direction:column;gap:16px}
+  .note li{display:flex;gap:13px;font-size:14.5px;line-height:1.5;color:#28403d}
+  .note li .b{width:7px;height:7px;border-radius:50%;background:var(--coral);flex:none;margin-top:9px}
+  .note li b{color:var(--ink);font-weight:600}
+  .evidence{margin-top:24px;padding:16px 18px;border-left:3px solid var(--petrol);background:#ffffff80;border-radius:0 12px 12px 0}
+  .evidence .src{font-family:"Space Mono";font-size:10.5px;letter-spacing:.1em;text-transform:uppercase;color:var(--graphite);font-weight:700;margin-bottom:7px}
+  .evidence p{font-size:13.5px;color:#28403d;line-height:1.5}
+
+  footer{max-width:1120px;margin:56px auto 0;padding:24px 28px 0;border-top:1px solid var(--line);color:var(--graphite);font-size:12.5px;display:flex;justify-content:space-between;gap:16px;flex-wrap:wrap}
+  footer b{color:var(--ink)}
+
+  /* ---------- home / daily ring ---------- */
+  .home-hi{font-family:"Space Grotesk";font-weight:700;font-size:19px;color:var(--ink);line-height:1}
+  .home-sub{font-family:"Space Mono";font-size:11.5px;color:var(--graphite);margin-top:5px}
+  .ring-wrap{position:relative;width:172px;height:172px;margin:20px auto 10px}
+  .ring{width:100%;height:100%;transform:rotate(-90deg)}
+  .ring-track{fill:none;stroke:#0b1f1e12;stroke-width:11}
+  .ring-fill{fill:none;stroke:var(--coral);stroke-width:11;stroke-linecap:round;
+    stroke-dasharray:327;stroke-dashoffset:327;transition:stroke-dashoffset 1s var(--ease)}
+  .ring-center{position:absolute;inset:0;display:grid;place-content:center;text-align:center}
+  .ring-center b{font-family:"Space Grotesk";font-size:38px;display:block;line-height:1;color:var(--ink)}
+  .ring-center span{font-family:"Space Mono";font-size:10px;letter-spacing:.12em;text-transform:uppercase;color:var(--graphite);margin-top:4px}
+  .exrow{display:flex;align-items:center;gap:13px;width:100%;text-align:left;cursor:pointer;
+    background:#fff;border:1.5px solid var(--line);border-radius:14px;padding:13px;margin-top:12px;transition:.2s var(--ease)}
+  .exrow:hover{border-color:var(--petrol);transform:translateY(-1px);box-shadow:var(--shadow-soft)}
+  .exrow:focus-visible{outline:2.5px solid var(--coral);outline-offset:2px}
+  .exrow.done{background:#0b1f1e06;border-style:dashed}
+  .exico{width:42px;height:42px;border-radius:12px;flex:none;display:grid;place-items:center;font-size:19px}
+  .exico.spar{background:var(--petrol)}
+  .exico.recall{background:var(--coral-soft)}
+  .extxt{flex:1;display:flex;flex-direction:column;gap:3px;min-width:0}
+  .extxt>b{font-family:"Space Grotesk";font-size:15px;color:var(--ink);font-weight:700}
+  .extxt>b small{font-weight:400;color:var(--graphite-2);font-size:11px}
+  .extxt>small{font-size:12px;color:var(--graphite);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+  .exstatus{width:26px;height:26px;border-radius:50%;background:#16886e;color:#fff;display:grid;place-items:center;font-size:13px;font-weight:700;flex:none}
+  .exchev{color:var(--coral);font-size:24px;font-weight:700;flex:none;line-height:1}
+  .home-foot{text-align:center;font-size:12px;color:var(--graphite-2);font-family:"Space Mono";padding-top:10px}
+
+  @media(prefers-reduced-motion:reduce){
+    *{transition:none!important;animation:none!important}
+    .ring-fill{stroke-dashoffset:163!important}
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <header class="masthead">
+    <div class="brand">
+      <div class="mark"><span>W</span></div>
+      <div>
+        <h1>Whetstone</h1>
+        <p>Keep the edge AI is dulling.</p>
+      </div>
+    </div>
+    <p class="premise">A daily 5-minute gym for the mental muscles the research says erode under heavy AI use. <b>Tap through each critical path.</b></p>
+  </header>
+
+  <div class="tabs" role="tablist" aria-label="App concepts">
+    <button class="tab" role="tab" id="tab-today" aria-controls="stage" aria-selected="true" data-tab="today">
+      <span class="dot"></span> Today <small>· home</small>
+    </button>
+    <button class="tab" role="tab" id="tab-spar" aria-controls="stage" aria-selected="false" data-tab="spar">
+      <span class="dot"></span> Spar <small>· reasoning</small>
+    </button>
+    <button class="tab" role="tab" id="tab-recall" aria-controls="stage" aria-selected="false" data-tab="recall">
+      <span class="dot"></span> Recall <small>· memory</small>
+    </button>
+  </div>
+  <p class="concept-line" id="conceptLine"></p>
+
+  <div class="rail" id="rail" aria-label="Critical path steps"></div>
+
+  <div class="stage" id="stage">
+    <div class="phone-col">
+      <div class="phone">
+        <div class="notch"></div>
+        <div class="screen" id="screen"></div>
+      </div>
+      <div class="controls">
+        <button class="nav" id="prev">‹ Back</button>
+        <span class="tip" id="tip">tap the button on-screen</span>
+        <button class="nav" id="next">Next ›</button>
+      </div>
+    </div>
+    <aside class="note" id="note"></aside>
+  </div>
+
+  <footer>
+    <span>Interactive concept mockup · two flows from one product thesis</span>
+    <span><b>Design line:</b> Spar runs dark (the ring) · Recall runs light (the desk)</span>
+  </footer>
+</div>
+
+<script>
+/* ---------------- content model ---------------- */
+const ICON_GEAR = "⚙";
+
+const flows = {
+  today: {
+    name:"Today", sub:"The hub — both exercises in one daily ring", dark:false, hub:true,
+    steps:["Home"],
+    screens:[
+      { kicker:"The hub", title:"One ring. Two reps.", screenname:"00 · Home",
+        notes:[
+          ["<b>Both muscles, one habit.</b> Reasoning (Spar) and memory (Recall) share a single daily ring, so the streak stands for something concrete — not minutes in an app."],
+          ["<b>Status, not a feed.</b> Home tells you what's due and what's done, then gets out of the way. No scroll to fall into."],
+          ["<b>The cards are live</b> — tap one to open its flow."]
+        ],
+        evidence:["Why a shared hub","Maintenance only sticks if it's frictionless and daily. One ring covering two short reps is the smallest viable habit that touches both eroding skills."]
+      }
+    ]
+  },
+  spar: {
+    name: "Spar",
+    sub: "Concept 1 — Steelman · build & defend an argument against a Socratic adversary",
+    dark: true,
+    steps: ["Open","Your take","Sparring","Score"],
+    screens: [
+      { /* 0 */
+        kicker:"The hook", title:"One claim. No feed.", screenname:"01 · Daily open",
+        notes:[
+          ["<b>Single daily rep.</b> One debatable claim, no scroll, no notifications stream — friction low enough to survive as a habit."],
+          ["<b>Streak as commitment.</b> The fire counts consecutive days of <i>thinking</i>, not minutes logged."]
+        ],
+        evidence:["Why it matters","Maintenance is where skills are kept — so the core loop has to be small enough to do every day."]
+      },
+      { /* 1 */
+        kicker:"Draft before prompt", title:"You commit first. AI stays locked.", screenname:"02 · Your take",
+        notes:[
+          ["<b>The lock is the whole product.</b> You can't reach AI until you've put your own reasoning down. This is what makes it not-a-chatbot."],
+          ["<b>Forces retrieval.</b> You produce from your own head before any assistance touches the task."]
+        ],
+        evidence:["MIT, “Your Brain on ChatGPT”","The group that built the skill first and used AI second stayed cognitively engaged. Struggle-first is the one habit the data most clearly rewards."]
+      },
+      { /* 2 */
+        kicker:"Socratic adversary", title:"It argues back. It never answers.", screenname:"03 · Sparring",
+        notes:[
+          ["<b>Questions, counters, demands for evidence</b> — the AI is constrained to challenge your reasoning, not hand you a conclusion."],
+          ["<b>No “just tell me” button exists.</b> The escape hatch is removed by design."]
+        ],
+        evidence:["Cognitive-offloading research","Socratic / “evaluate-before-proceed” AI beat unstructured use in every intervention tested. The harm is reversible through structure."]
+      },
+      { /* 3 */
+        kicker:"Scores reasoning, not answers", title:"Measured on rigor — not on being right.", screenname:"04 · Score & streak",
+        notes:[
+          ["<b>Three dimensions that actually erode:</b> rigor, evidence, and counter-arguments considered — the “outcome diversity” AI flattens."],
+          ["<b>Model take unlocks last.</b> You only see a strong answer <i>after</i> doing the work, so it teaches without short-circuiting the struggle."],
+          ["<b>Adaptive.</b> Your weakest dimension sets tomorrow's prompt."]
+        ],
+        evidence:["Microsoft / CMU, CHI 2025","Heavy AI users skip verification and converge on less diverse outcomes. Scoring those exact behaviours is the point."]
+      }
+    ]
+  },
+  recall: {
+    name: "Recall",
+    sub: "Concept 2 — Explain-it-back · rebuild what AI explained to you, from memory, on a spaced schedule",
+    dark: false,
+    steps: ["Due now","Recall","Gap report","Re-encode"],
+    screens: [
+      { /* 0 */
+        kicker:"Spaced by design", title:"Today's recall is due.", screenname:"01 · Due now",
+        notes:[
+          ["<b>Pulls from your real AI history.</b> Things you had AI explain resurface days later, timed by a spacing algorithm."],
+          ["<b>Low effort to start.</b> One card due, ~3 minutes — the capture was passive, the recall is active."]
+        ],
+        evidence:["MIT, “Your Brain on ChatGPT”","78%+ of AI-assisted writers couldn't quote their own work. If you can't reproduce it, you didn't learn it — this is the antidote."]
+      },
+      { /* 1 */
+        kicker:"Active recall", title:"Rebuild it from memory. No peeking.", screenname:"02 · Recall",
+        notes:[
+          ["<b>Produce, don't recognise.</b> The original stays hidden so you can't fake recall by re-reading."],
+          ["<b>Rough is fine.</b> The act of retrieving is the rep, even when it's incomplete."]
+        ],
+        evidence:["Roediger & Karpicke (retrieval practice)","Testing yourself beats re-reading by a wide, well-replicated margin. This is the highest-transfer technique in the whole space."]
+      },
+      { /* 2 */
+        kicker:"The gap is the lesson", title:"What you kept vs. what you lost.", screenname:"03 · Gap report",
+        notes:[
+          ["<b>AI grades the delta</b> between your recall and the source — what you nailed, what blurred, what vanished."],
+          ["<b>Targets the loss.</b> Feedback lands exactly on the parts that slipped, not generic praise."]
+        ],
+        evidence:["Why a gap report","Specific, retrieval-based feedback is what converts a forgotten idea into a durable one — vague scores don't."]
+      },
+      { /* 3 */
+        kicker:"Spacing the next rep", title:"Locked back in — see you in 4 days.", screenname:"04 · Re-encode & schedule",
+        notes:[
+          ["<b>Re-encode the gaps</b> right now, then the interval expands — the better you recall, the longer until it returns."],
+          ["<b>Closes the loop.</b> Retention rises, streak ticks, and tomorrow has a reason to exist."]
+        ],
+        evidence:["Spaced repetition","Expanding intervals fight the forgetting curve. Pairing it with active recall is the durable-memory one-two punch."]
+      }
+    ]
+  }
+};
+
+/* ---------------- state ---------------- */
+let state = { tab:"today", step:0, drafts:{}, sparReplied:false, scored:false };
+
+const $ = s => document.querySelector(s);
+const screenEl = $("#screen"), noteEl = $("#note"), railEl = $("#rail"),
+      conceptLine = $("#conceptLine"), prevBtn = $("#prev"), nextBtn = $("#next"), tipEl = $("#tip");
+
+/* ---------------- phone screen renderers ---------------- */
+function statusbar(){
+  return `<div class="statusbar"><span>9:41</span>
+    <span class="sb-dots"><i></i><i></i><i></i> &nbsp;<span class="sb-bat"></span></span></div>`;
+}
+function appbar(streak){
+  return `<div class="appbar">
+    <span class="streak"><span class="fl">🔥</span> ${streak}</span>
+    <span class="gear">${ICON_GEAR}</span></div>`;
+}
+
+function todayScreen(){
+  return statusbar()+`<div class="appview">
+    <div class="appbar">
+      <div><div class="home-hi">Good morning.</div><div class="home-sub">Day 8 · keep the edge</div></div>
+      <span class="streak"><span class="fl">🔥</span> 8</span>
+    </div>
+    <div class="ring-wrap">
+      <svg class="ring" viewBox="0 0 120 120" aria-hidden="true">
+        <circle class="ring-track" cx="60" cy="60" r="52"></circle>
+        <circle class="ring-fill" cx="60" cy="60" r="52" data-off="163"></circle>
+      </svg>
+      <div class="ring-center"><b>1/2</b><span>reps today</span></div>
+    </div>
+    <div class="eyebrow" style="margin-top:4px">Today's training</div>
+    <button class="exrow done" data-act="open-spar">
+      <span class="exico spar">🥊</span>
+      <span class="extxt"><b>Spar <small>· reasoning</small></b><small>Done — rigor 8 · back tomorrow</small></span>
+      <span class="exstatus">✓</span>
+    </button>
+    <button class="exrow" data-act="open-recall">
+      <span class="exico recall">🧠</span>
+      <span class="extxt"><b>Recall <small>· memory</small></b><small>1 card due — vector databases</small></span>
+      <span class="exchev">›</span>
+    </button>
+    <div class="spacer"></div>
+    <div class="home-foot">Two reps a day keeps the muscle.</div>
+  </div>`;
+}
+
+function sparScreen(step){
+  if(step===0) return statusbar()+`<div class="appview">
+    ${appbar("7")}
+    <div class="eyebrow">Today · Spar</div>
+    <div class="claim lg">“Remote work makes teams less innovative.”</div>
+    <div class="sub">Agree, disagree, or complicate it.</div>
+    <div class="meta">⏱ ~5 min &nbsp;·&nbsp; <b>Reasoning rep</b></div>
+    <div class="spacer"></div>
+    <button class="btn" data-act="next">Start today's rep</button>
+  </div>`;
+
+  if(step===1){
+    const v = state.drafts["spar1"]||"";
+    const ok = v.trim().split(/\s+/).filter(Boolean).length>=12;
+    return statusbar()+`<div class="appview">
+      <div class="backrow"><span class="chev" data-act="prev">‹</span><span class="ctx">“Remote work makes teams less innovative.”</span></div>
+      <div class="eyebrow" style="margin-top:8px">Your position — before any AI</div>
+      <textarea class="ta" data-draft="spar1" placeholder="Where do you land, and why? Give your real reasons.">${v}</textarea>
+      <div class="counter"><span>Make your case</span><span class="${ok?'ok':''}">${ok?'ready ✓':'min ~12 words'}</span></div>
+      <div class="lock"><span class="ic">🔒</span><span>AI stays locked until you commit your own take. No shortcuts to the thinking.</span></div>
+      <div class="spacer"></div>
+      <button class="btn" data-act="next" ${ok?'':'disabled'}>Lock in my take</button>
+    </div>`;
+  }
+
+  if(step===2){
+    const replied = state.sparReplied;
+    const v = state.drafts["spar2"]||"";
+    const canSend = v.trim().length>3;
+    let thread = `<div class="bubble ai"><span class="who">Spar · Round ${replied?2:1} of 3</span>
+      You said focus time drives depth. But a lot of innovation comes from the <b>collision</b> of half-formed ideas. What's your evidence async produces <i>more</i> of that, not less?</div>`;
+    if(replied){
+      thread = `<div class="bubble ai"><span class="who">Spar · Round 1 of 3</span>
+        You said focus time drives depth. But innovation often comes from the <b>collision</b> of half-formed ideas. Evidence that async produces more of that, not less?</div>
+        <div class="bubble me">${(state.drafts["spar2"]||"My rebuttal…")}</div>
+        <div class="bubble ai"><span class="who">Spar · Round 2 of 3</span>
+        Fair — but that's a mechanism, not evidence. Name one concrete case, and the <b>strongest</b> counter-example someone could throw back at you.</div>`;
+    }
+    return statusbar()+`<div class="appview">
+      <div class="backrow"><span class="chev" data-act="prev">‹</span><span class="ctx">🥊 Sparring</span></div>
+      <div class="thread">${thread}</div>
+      ${replied
+        ? `<div class="spacer"></div><button class="btn" data-act="next">See my score</button>`
+        : `<div class="inputbar">
+             <textarea class="ta" data-draft="spar2" placeholder="Type your rebuttal…">${v}</textarea>
+             <button class="send" data-act="reply" ${canSend?'':'disabled'}>↑</button>
+           </div>
+           <div class="blocked"><s>“Just tell me the answer”</s> — disabled by design</div>`}
+    </div>`;
+  }
+
+  if(step===3){
+    return statusbar()+`<div class="appview">
+      <div class="eyebrow">Today's rep — scored</div>
+      <div class="claim" style="font-size:21px;margin-top:10px">Nice work. Here's where you stood.</div>
+      <div class="scorerow"><div class="lab"><span>Rigor</span><span>8/10</span></div><div class="bar"><i data-w="80"></i></div></div>
+      <div class="scorerow"><div class="lab"><span>Evidence</span><span>6/10</span></div><div class="bar"><i data-w="60"></i></div></div>
+      <div class="scorerow"><div class="lab"><span>Counter-args considered</span><span>9/10</span></div><div class="bar"><i data-w="90"></i></div></div>
+      <div class="callout"><span class="tag">Weakest link</span>
+        Strong structure, thin proof. You asserted more than you evidenced — <b>tomorrow's rep targets evidence.</b></div>
+      <div class="spacer"></div>
+      <button class="btn" data-act="finish">Save rep · 🔥 8</button>
+      <button class="btn ghost" data-act="model">See a model take</button>
+    </div>
+    <div class="toast" id="toast"><span>✓ Rep saved.</span> <span>Streak now <b>8 days</b> — come back tomorrow.</span></div>`;
+  }
+}
+
+function recallScreen(step){
+  if(step===0) return statusbar()+`<div class="appview light-stack">
+    ${appbar("12")}
+    <div class="eyebrow">Due now · Recall</div>
+    <div class="sub" style="margin-top:14px">2 days ago you had AI explain:</div>
+    <div class="claim" style="font-size:26px;margin-top:6px">“How a vector database finds similar items.”</div>
+    <div class="sub">Time to rebuild it from memory.</div>
+    <div class="meta">🗂 1 of 3 due &nbsp;·&nbsp; <b>~3 min</b></div>
+    <div class="spacer"></div>
+    <button class="btn" data-act="next">Start recall</button>
+  </div>`;
+
+  if(step===1){
+    const v = state.drafts["recall1"]||"";
+    const ok = v.trim().split(/\s+/).filter(Boolean).length>=10;
+    return statusbar()+`<div class="appview">
+      <div class="backrow"><span class="chev" data-act="prev">‹</span><span class="ctx">Vector database · similarity search</span></div>
+      <div class="eyebrow" style="margin-top:8px">Explain it in your own words — from memory</div>
+      <textarea class="ta" data-draft="recall1" placeholder="No peeking. Rough is fine — just get the idea out.">${v}</textarea>
+      <div class="counter"><span>From memory</span><span class="${ok?'ok':''}">${ok?'ready ✓':'min ~10 words'}</span></div>
+      <div class="lock"><span class="ic">🙈</span><span>The original stays hidden until you submit. Recognising it isn't the same as recalling it.</span></div>
+      <div class="spacer"></div>
+      <button class="btn" data-act="next" ${ok?'':'disabled'}>Submit recall</button>
+    </div>`;
+  }
+
+  if(step===2){
+    return statusbar()+`<div class="appview">
+      <div class="eyebrow">Your recall vs. the original</div>
+      <div class="gaps">
+        <div class="gap hit"><span class="ico">✓</span><span><span class="k">Nailed</span><small>Data gets turned into vectors (embeddings).</small></span></div>
+        <div class="gap hit"><span class="ico">✓</span><span><span class="k">Nailed</span><small>“Similar” = close together in that space.</small></span></div>
+        <div class="gap miss"><span class="ico">!</span><span><span class="k">Blurred</span><small>You skipped <b>how</b> it stays fast — approximate nearest-neighbour indexing.</small></span></div>
+        <div class="gap miss"><span class="ico">!</span><span><span class="k">Missed</span><small>The accuracy-vs-speed tradeoff that makes it usable at scale.</small></span></div>
+      </div>
+      <div class="retention"><div class="lab"><span>Recall strength</span><span>72%</span></div><div class="bar"><i data-w="72"></i></div></div>
+      <div class="spacer"></div>
+      <button class="btn" data-act="next">Re-encode the gaps</button>
+    </div>`;
+  }
+
+  if(step===3){
+    return statusbar()+`<div class="appview">
+      <div class="eyebrow">Locked back in</div>
+      <div class="claim" style="font-size:21px;margin-top:10px">Just the two you lost:</div>
+      <div class="recard"><b>ANN indexing</b>Instead of checking every vector, it searches an approximate map — close enough, far faster.</div>
+      <div class="recard"><b>The tradeoff</b>Speed comes from accepting “nearly nearest” instead of exact. You tune how much accuracy to trade.</div>
+      <div class="schedule">
+        <div><div class="lab">Next recall</div><div class="big">in 4 days</div></div>
+        <div class="curve"><i style="height:30%"></i><i style="height:45%"></i><i style="height:65%"></i><i style="height:100%"></i></div>
+      </div>
+      <div class="spacer"></div>
+      <button class="btn" data-act="finish">Done · 🔥 13</button>
+      <button class="btn ghost" data-act="model">See the full original</button>
+    </div>
+    <div class="toast" id="toast"><span>✓ Scheduled.</span> <span>Returns in <b>4 days</b> — streak now <b>13</b>.</span></div>`;
+  }
+}
+
+/* ---------------- render ---------------- */
+function render(){
+  const flow = flows[state.tab];
+  document.querySelectorAll(".tab").forEach(t=>{
+    const on = t.dataset.tab===state.tab;
+    t.setAttribute("aria-selected", on);
+  });
+  conceptLine.textContent = flow.sub;
+
+  const isHub = !!flow.hub;
+
+  // screen
+  screenEl.className = "screen " + (flow.dark ? "dark":"light");
+  const renderer = state.tab==="spar" ? sparScreen : state.tab==="recall" ? recallScreen : todayScreen;
+  screenEl.innerHTML = renderer(state.step);
+
+  // rail + controls hidden on the hub (single screen, no sequence)
+  railEl.style.display = isHub ? "none" : "flex";
+  document.querySelector(".controls").style.display = isHub ? "none" : "flex";
+
+  // rail
+  railEl.innerHTML = flow.steps.map((label,i)=>{
+    const st = i<state.step ? "done" : i===state.step ? "active" : "todo";
+    const conn = i<flow.steps.length-1 ? `<span class="rconn"></span>`:"";
+    return `<div class="rstep"><button class="rbtn" data-step="${i}" data-state="${st}">
+      <span class="rnum">${i<state.step?'✓':i+1}</span><span class="rlabel">${label}</span></button>${conn}</div>`;
+  }).join("");
+
+  // note
+  const sc = flow.screens[state.step];
+  noteEl.innerHTML = `
+    <div class="kicker">${isHub ? flow.name + " · home" : flow.name + " · step " + (state.step+1) + " of 4"}</div>
+    <h2>${sc.title}</h2>
+    <div class="screenname">${sc.screenname}</div>
+    <ul>${sc.notes.map(n=>`<li><span class="b"></span><span>${n[0]}</span></li>`).join("")}</ul>
+    <div class="evidence"><div class="src">${sc.evidence[0]}</div><p>${sc.evidence[1]}</p></div>`;
+
+  // controls
+  prevBtn.disabled = state.step===0;
+  nextBtn.disabled = state.step===3;
+  tipEl.textContent = state.step===3 ? "end of critical path" : "tap the on-screen button →";
+
+  wire();
+  animateBars();
+}
+
+function animateBars(){
+  requestAnimationFrame(()=>{
+    screenEl.querySelectorAll(".bar i[data-w]").forEach(b=>{ b.style.width = b.dataset.w + "%"; });
+    const ring = screenEl.querySelector(".ring-fill");
+    if(ring) ring.style.strokeDashoffset = ring.dataset.off || "163";
+  });
+}
+
+/* ---------------- interactivity ---------------- */
+function go(step){
+  state.step = Math.max(0, Math.min(3, step));
+  if(state.step!==2) state.sparReplied=false;
+  render();
+}
+
+function wire(){
+  // in-screen action buttons
+  screenEl.querySelectorAll("[data-act]").forEach(el=>{
+    el.addEventListener("click", ()=>{
+      const a = el.dataset.act;
+      if(a==="next") go(state.step+1);
+      else if(a==="prev") go(state.step-1);
+      else if(a==="open-spar"){ state.tab="spar"; state.step=0; state.sparReplied=false; render(); }
+      else if(a==="open-recall"){ state.tab="recall"; state.step=0; render(); }
+      else if(a==="reply"){ state.sparReplied=true; render(); }
+      else if(a==="finish"){ const t=$("#toast"); if(t){ t.classList.add("show"); el.disabled=true; el.textContent="Saved ✓"; } }
+      else if(a==="model"){ el.textContent="Model take revealed ↓"; el.disabled=true; }
+    });
+  });
+  // textareas
+  screenEl.querySelectorAll("[data-draft]").forEach(ta=>{
+    ta.addEventListener("input", ()=>{
+      state.drafts[ta.dataset.draft]=ta.value;
+      // live-toggle the gating button without losing caret
+      const flow=state.tab, step=state.step;
+      const btn = screenEl.querySelector('.btn[data-act="next"]');
+      const send = screenEl.querySelector('.send[data-act="reply"]');
+      if(btn){
+        const words = ta.value.trim().split(/\s+/).filter(Boolean).length;
+        const need = (state.tab==="spar")?12:10;
+        btn.disabled = words<need;
+        const c = screenEl.querySelector(".counter span:last-child");
+        if(c){ c.className = words>=need?"ok":""; c.textContent = words>=need?"ready ✓":(state.tab==="spar"?"min ~12 words":"min ~10 words"); }
+      }
+      if(send){ send.disabled = ta.value.trim().length<=3; }
+    });
+  });
+  // rail jump
+  railEl.querySelectorAll(".rbtn").forEach(b=>{
+    b.addEventListener("click", ()=> go(parseInt(b.dataset.step,10)) );
+  });
+}
+
+document.querySelectorAll(".tab").forEach(t=>{
+  t.addEventListener("click", ()=>{ state.tab=t.dataset.tab; state.step=0; state.sparReplied=false; render(); });
+});
+prevBtn.addEventListener("click", ()=>go(state.step-1));
+nextBtn.addEventListener("click", ()=>go(state.step+1));
+
+render();
+</script>
+</body>
+</html>
