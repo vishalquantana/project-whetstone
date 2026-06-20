@@ -1,0 +1,241 @@
+/* Spar exercise — dark theme. App shell already supplies .theme-dark on .app,
+   so these styles assume a dark surface and lean on the shared tokens. */
+
+.spar {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  min-height: 0;
+}
+
+.spar-head {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.spar-round-pips {
+  display: flex;
+  gap: 6px;
+  align-items: center;
+}
+.spar-pip {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: var(--line-dark);
+  transition: 0.25s var(--ease);
+}
+.spar-pip.is-done {
+  background: #7fd8cb;
+}
+.spar-pip.is-active {
+  background: var(--coral);
+  box-shadow: 0 0 0 4px var(--coral-soft);
+}
+
+.spar-claim {
+  margin-top: 14px;
+  background: var(--petrol-2);
+  border: 1.5px solid var(--line-dark);
+  border-radius: var(--radius-sm);
+  padding: 16px 18px;
+}
+.spar-claim .spar-claim-label {
+  font-family: var(--font-mono);
+  font-size: 10.5px;
+  font-weight: 700;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: #7fd8cb;
+}
+.spar-claim .spar-claim-text {
+  margin-top: 8px;
+  font-family: var(--font-display);
+  font-size: 19px;
+  line-height: 1.35;
+  letter-spacing: -0.01em;
+  color: var(--chalk);
+}
+
+/* Conversation transcript */
+.spar-thread {
+  margin-top: 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+.spar-turn {
+  border-radius: var(--radius-sm);
+  padding: 12px 14px;
+  font-size: 14px;
+  line-height: 1.5;
+}
+.spar-turn .spar-turn-who {
+  font-family: var(--font-mono);
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  margin-bottom: 6px;
+  opacity: 0.85;
+}
+.spar-turn.is-you {
+  background: #06201e;
+  border: 1.5px solid var(--line-dark);
+  color: var(--chalk);
+}
+.spar-turn.is-you .spar-turn-who {
+  color: #9fd3cb;
+}
+.spar-turn.is-foe {
+  background: transparent;
+  border: 1.5px solid var(--coral);
+  color: var(--chalk);
+}
+.spar-turn.is-foe .spar-turn-who {
+  color: var(--coral);
+}
+
+/* Thinking / typing indicator */
+.spar-thinking {
+  display: inline-flex;
+  gap: 4px;
+  align-items: center;
+}
+.spar-thinking span {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--coral);
+  animation: spar-bounce 1s var(--ease) infinite;
+}
+.spar-thinking span:nth-child(2) {
+  animation-delay: 0.15s;
+}
+.spar-thinking span:nth-child(3) {
+  animation-delay: 0.3s;
+}
+@keyframes spar-bounce {
+  0%,
+  60%,
+  100% {
+    transform: translateY(0);
+    opacity: 0.55;
+  }
+  30% {
+    transform: translateY(-4px);
+    opacity: 1;
+  }
+}
+
+/* Composer */
+.spar-composer {
+  margin-top: 16px;
+}
+.spar-counter {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: 8px;
+  font-family: var(--font-mono);
+  font-size: 11px;
+  color: #8fb8b2;
+}
+.spar-counter .is-met {
+  color: #7fd8cb;
+}
+.spar-lock-hint {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  color: #8fb8b2;
+  margin-top: 6px;
+}
+
+.spar-error {
+  margin-top: 12px;
+  border: 1.5px solid var(--coral);
+  border-radius: var(--radius-sm);
+  padding: 12px 14px;
+  font-size: 13px;
+  color: var(--chalk);
+  background: var(--coral-soft);
+}
+
+/* Verdict / scorecard */
+.spar-scores {
+  margin-top: 14px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+.spar-score-row {
+  display: grid;
+  grid-template-columns: 96px 1fr 34px;
+  align-items: center;
+  gap: 10px;
+}
+.spar-score-row .spar-score-label {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: #9fd3cb;
+}
+.spar-score-bar {
+  height: 8px;
+  border-radius: 999px;
+  background: var(--line-dark);
+  overflow: hidden;
+}
+.spar-score-bar > i {
+  display: block;
+  height: 100%;
+  border-radius: 999px;
+  background: #7fd8cb;
+}
+.spar-score-row .spar-score-num {
+  font-family: var(--font-mono);
+  font-size: 13px;
+  text-align: right;
+  color: var(--chalk);
+}
+
+.spar-weakest {
+  margin-top: 16px;
+  background: var(--petrol-2);
+  border: 1.5px solid var(--coral);
+  border-radius: var(--radius-sm);
+  padding: 14px 16px;
+}
+.spar-weakest .spar-weakest-label {
+  font-family: var(--font-mono);
+  font-size: 10.5px;
+  font-weight: 700;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--coral);
+}
+.spar-weakest .spar-weakest-text {
+  margin-top: 6px;
+  font-size: 14px;
+  line-height: 1.5;
+  color: var(--chalk);
+}
+
+.spar-delta {
+  margin-top: 16px;
+  text-align: center;
+  font-family: var(--font-display);
+  font-size: 15px;
+  color: var(--chalk);
+}
+.spar-delta b {
+  color: var(--coral);
+  font-size: 22px;
+}
+
+.spar-actions {
+  margin-top: 18px;
+}

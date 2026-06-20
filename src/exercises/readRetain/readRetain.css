@@ -1,0 +1,203 @@
+/* Read & Retain — light theme. Scoped under .rr to avoid leaking. */
+
+.rr {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+}
+
+.rr-title {
+  font-size: 26px;
+  letter-spacing: -0.02em;
+  margin-top: 12px;
+}
+
+.rr-lede {
+  margin-top: 12px;
+  color: var(--graphite);
+}
+
+.rr-demo-tag {
+  margin-top: 14px;
+  font-size: 11.5px;
+  letter-spacing: 0.04em;
+  color: var(--graphite-2);
+}
+
+.rr-field-label {
+  display: block;
+  margin: 20px 0 8px;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--graphite);
+}
+
+.rr-mt {
+  margin-top: 22px;
+}
+
+/* word-count meter row under the source box */
+.rr-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+.rr-meter {
+  margin-top: 8px;
+  font-size: 11.5px;
+  color: var(--graphite-2);
+}
+.rr-hint {
+  color: var(--coral);
+}
+
+.rr-inline {
+  width: auto;
+  align-self: flex-start;
+  margin-top: 4px;
+  padding-left: 0;
+  padding-right: 0;
+  text-decoration: underline;
+}
+
+.rr-error {
+  margin-top: 12px;
+  font-size: 12px;
+  color: var(--coral);
+  border-left: 2px solid var(--coral);
+  padding-left: 10px;
+}
+
+/* ---- redacted summary card ---- */
+.rr-summary {
+  margin-top: 4px;
+}
+.rr-summary-text {
+  font-size: 15px;
+  line-height: 1.7;
+  color: var(--ink);
+}
+
+/* the gap chips standing in for redacted terms */
+.rr-gap {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 30px;
+  height: 22px;
+  margin: 0 1px;
+  padding: 0 7px;
+  border-radius: 6px;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  vertical-align: baseline;
+  color: var(--petrol);
+  background: var(--coral-soft);
+  border: 1.5px dashed var(--coral);
+}
+
+.rr-gap-count {
+  margin-top: 12px;
+  font-size: 11px;
+  letter-spacing: 0.06em;
+  color: var(--graphite-2);
+}
+
+/* ---- the question ---- */
+.rr-question {
+  margin-top: 22px;
+  padding: 16px;
+  border-radius: var(--radius-sm);
+  background: var(--petrol);
+  color: var(--chalk);
+}
+.rr-question .rr-field-label {
+  margin: 0 0 6px;
+  color: #7fd8cb;
+}
+.rr-question-text {
+  font-size: 17px;
+  line-height: 1.4;
+  letter-spacing: -0.01em;
+}
+
+.rr-answer-ta {
+  min-height: 120px;
+}
+
+/* ---- verdict ---- */
+.rr-verdict {
+  margin-top: 8px;
+}
+.rr-verdict-head {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+}
+.rr-verdict-head .rr-field-label {
+  margin: 0;
+}
+.rr-capture {
+  font-size: 30px;
+  letter-spacing: -0.02em;
+  color: var(--petrol);
+}
+.rr-meter-bar {
+  margin-top: 10px;
+  height: 7px;
+  border-radius: 99px;
+  background: var(--mist-2);
+  overflow: hidden;
+}
+.rr-meter-bar > span {
+  display: block;
+  height: 100%;
+  border-radius: 99px;
+  background: var(--coral);
+  transition: width 0.5s var(--ease);
+}
+.rr-verdict-note {
+  margin-top: 12px;
+  font-size: 14px;
+  color: var(--graphite);
+}
+
+/* ---- revealed clean summary ---- */
+.rr-clean .rr-summary-text {
+  color: var(--ink);
+}
+
+/* ---- the blanks you would have missed ---- */
+.rr-blanks {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+.rr-blank-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  padding: 7px 11px;
+  border-radius: 99px;
+  font-size: 12.5px;
+  background: #fff;
+  border: 1.5px solid var(--line);
+  color: var(--ink);
+}
+.rr-blank-chip em {
+  font-style: normal;
+  font-size: 10px;
+  font-weight: 700;
+  color: var(--coral);
+  letter-spacing: 0.04em;
+}
+
+.rr-recorded {
+  margin-top: 20px;
+  font-size: 11.5px;
+  letter-spacing: 0.04em;
+  color: var(--graphite-2);
+}

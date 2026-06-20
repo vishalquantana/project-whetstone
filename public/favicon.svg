@@ -1,0 +1,16 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" role="img" aria-label="Whetstone">
+  <defs>
+    <linearGradient id="glint" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0.38" stop-color="#0E3D3A"/>
+      <stop offset="0.48" stop-color="#6FE0D2"/>
+      <stop offset="0.5" stop-color="#FFFFFF"/>
+      <stop offset="0.52" stop-color="#6FE0D2"/>
+      <stop offset="0.62" stop-color="#0E3D3A"/>
+    </linearGradient>
+  </defs>
+  <rect width="512" height="512" rx="116" fill="#0E3D3A"/>
+  <rect width="512" height="512" rx="116" fill="url(#glint)" opacity="0.9"/>
+  <text x="256" y="256" text-anchor="middle" dominant-baseline="central"
+        font-family="'Space Grotesk', system-ui, sans-serif" font-weight="700"
+        font-size="280" fill="#F8FAF9">W</text>
+</svg>

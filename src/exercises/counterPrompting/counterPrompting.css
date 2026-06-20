@@ -1,0 +1,251 @@
+/* Counter-Prompting exercise — light theme, ported from the Whetstone system */
+
+.cp {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  min-height: 0;
+}
+
+.cp-center {
+  align-items: center;
+  text-align: center;
+}
+
+.cp-title {
+  font-size: 26px;
+  letter-spacing: -0.02em;
+  margin-top: 12px;
+  color: var(--ink);
+}
+
+.cp-blurb {
+  margin-top: 12px;
+  color: var(--graphite);
+}
+
+.cp-steps {
+  list-style: none;
+  margin-top: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  counter-reset: cp-step;
+}
+.cp-steps li {
+  position: relative;
+  padding-left: 30px;
+  font-size: 12.5px;
+  line-height: 1.5;
+  color: var(--ink);
+  counter-increment: cp-step;
+}
+.cp-steps li::before {
+  content: counter(cp-step);
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 20px;
+  height: 20px;
+  border-radius: 6px;
+  background: var(--coral-soft);
+  color: var(--coral);
+  font-weight: 700;
+  font-size: 11px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.cp-demo {
+  margin-top: 18px;
+  font-size: 12px;
+  color: var(--graphite-2);
+}
+
+/* ---- timer ---- */
+.cp-topbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 8px;
+}
+.cp-timer {
+  font-size: 20px;
+  font-weight: 700;
+  letter-spacing: 0.02em;
+  color: var(--ink);
+  font-variant-numeric: tabular-nums;
+}
+.cp-timer-urgent {
+  color: var(--coral);
+}
+
+.cp-track {
+  height: 6px;
+  border-radius: 999px;
+  background: var(--mist-2);
+  overflow: hidden;
+  margin-bottom: 16px;
+}
+.cp-track-fill {
+  height: 100%;
+  border-radius: 999px;
+  background: var(--petrol-3);
+  transition: width 1s linear;
+}
+.cp-track-urgent {
+  background: var(--coral);
+}
+@media (prefers-reduced-motion: reduce) {
+  .cp-track-fill {
+    transition: none !important;
+  }
+}
+
+/* ---- prompt / answer cards ---- */
+.cp-question {
+  margin-bottom: 12px;
+}
+.cp-answer {
+  margin-bottom: 18px;
+  border-color: var(--mist-2);
+  background: #fbfdfc;
+}
+.cp-q-label {
+  display: block;
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.16em;
+  color: var(--graphite-2);
+  margin-bottom: 8px;
+}
+.cp-question p,
+.cp-answer p {
+  color: var(--ink);
+  font-size: 14px;
+}
+.cp-answer-body {
+  white-space: pre-wrap;
+}
+
+/* ---- input fields ---- */
+.cp-field-label {
+  display: block;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--graphite);
+  margin: 4px 0 8px;
+}
+.cp-optional {
+  font-weight: 400;
+  text-transform: none;
+  letter-spacing: 0;
+  color: var(--graphite-2);
+}
+.cp-ta {
+  min-height: 92px;
+  margin-bottom: 14px;
+}
+.cp-ta-short {
+  min-height: 72px;
+}
+
+.cp-status {
+  margin-top: 14px;
+  color: var(--graphite);
+  font-size: 13px;
+}
+.cp-timeup {
+  color: var(--coral);
+  font-weight: 700;
+}
+
+/* ---- spinner ---- */
+.cp-spinner {
+  width: 34px;
+  height: 34px;
+  margin: 26px auto 10px;
+  border-radius: 50%;
+  border: 3px solid var(--mist-2);
+  border-top-color: var(--coral);
+  animation: cp-spin 0.8s linear infinite;
+}
+@keyframes cp-spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .cp-spinner {
+    animation: none !important;
+    border-top-color: var(--coral);
+  }
+}
+
+/* ---- result ---- */
+.cp-score {
+  display: flex;
+  align-items: baseline;
+  gap: 12px;
+  margin: 16px 0 12px;
+  padding: 14px 16px;
+  border-radius: var(--radius-sm);
+  background: var(--mist);
+  border: 1.5px solid var(--line);
+}
+.cp-score-win {
+  background: var(--coral-soft);
+  border-color: var(--coral);
+}
+.cp-score-num {
+  font-size: 30px;
+  letter-spacing: -0.02em;
+  color: var(--ink);
+}
+.cp-score-win .cp-score-num {
+  color: var(--coral);
+}
+.cp-score-label {
+  font-size: 11px;
+  color: var(--graphite);
+}
+
+.cp-verdict {
+  color: var(--ink);
+  font-size: 14px;
+  margin-bottom: 16px;
+}
+
+.cp-reveal {
+  background: var(--chalk);
+}
+.cp-reveal-tag {
+  display: inline-block;
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--petrol-3);
+  background: #e2efed;
+  padding: 3px 8px;
+  border-radius: 6px;
+  margin-bottom: 10px;
+}
+.cp-reveal-h {
+  font-size: 13px;
+  letter-spacing: 0.01em;
+  color: var(--graphite);
+  text-transform: uppercase;
+  margin: 12px 0 4px;
+}
+.cp-reveal-h:first-of-type {
+  margin-top: 0;
+}
+.cp-reveal p {
+  color: var(--ink);
+  font-size: 14px;
+  white-space: pre-wrap;
+}
