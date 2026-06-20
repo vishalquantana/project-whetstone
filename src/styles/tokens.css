@@ -1,0 +1,27 @@
+:root {
+  /* ---- palette (ported from whetstone-mockup.html) ---- */
+  --mist: #e7ebea; /* cool concrete page bg */
+  --mist-2: #dbe0df;
+  --chalk: #f8faf9; /* near-white surfaces */
+  --petrol: #0e3d3a; /* deep teal-petrol brand / dark screens */
+  --petrol-2: #15514c; /* raised petrol surface */
+  --petrol-3: #1e635c;
+  --graphite: #5c6b69; /* muted teal-grey text */
+  --graphite-2: #8a9794;
+  --ink: #0b1f1e; /* near-black text on light */
+  --coral: #ff5470; /* the one spark: effort + streak */
+  --coral-soft: #ff547015;
+  --line: #c9d1cf;
+  --line-dark: #2c5a55;
+
+  --radius: 18px;
+  --radius-sm: 14px;
+  --shadow: 0 22px 50px -28px rgba(11, 31, 30, 0.55);
+  --shadow-soft: 0 10px 30px -20px rgba(11, 31, 30, 0.45);
+  --ease: cubic-bezier(0.22, 0.9, 0.3, 1);
+
+  /* ---- type ---- */
+  --font-ui: 'Inter', system-ui, sans-serif;
+  --font-display: 'Space Grotesk', system-ui, sans-serif;
+  --font-mono: 'Space Mono', ui-monospace, monospace;
+}

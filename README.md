@@ -4,7 +4,10 @@
 
 **Whetstone** is a concept for a daily ~5-minute "gym" for the mental muscles that research suggests erode under heavy LLM use — reasoning, argument construction, verification, and memory of your own work.
 
-This repository currently contains an **interactive, clickable mockup** (`whetstone-mockup.html`) that walks through the core product flows. It is a design prototype, not a working app — the "AI" responses are scripted and scores are illustrative.
+This repository contains two things:
+
+1. **A working web-app prototype** (Vite + React + TypeScript + PWA) — the real MVP, with three functioning exercises, a Cognitive Score, a Today hub, and live AI via your own Anthropic key (BYOK) or a no-key Demo mode.
+2. **The original clickable mockup** (`whetstone-mockup.html`) — a self-contained design prototype of the flows.
 
 ---
 
@@ -36,20 +39,29 @@ The prototype is one product with a shared daily habit and two exercises:
 
 ---
 
-## Run it
-
-It's a single self-contained file — no build, no dependencies (fonts load from Google Fonts).
+## Run the app
 
 ```bash
-# Option 1: just open it
-open whetstone-mockup.html
-
-# Option 2: serve locally
-python3 -m http.server 8000
-# then visit http://localhost:8000/whetstone-mockup.html
+npm install
+npm run dev        # http://localhost:5173
 ```
 
-Click through each tab. Try typing into the "Your take" / "Recall" fields — the **AI-locked** primary button only unlocks once you've committed your own input, which is the core mechanic.
+Other scripts: `npm run build` (type-check + production PWA build), `npm run typecheck`, `npm run e2e` (headless Playwright smoke test of all three flows — dev server must be running).
+
+- **Demo mode** (default): everything works with scripted content, no key required.
+- **Live AI:** open **Settings → Bring your own key**, paste an Anthropic API key (stored only in your browser), and the exercises call **Claude Haiku** directly. The paid tier is stubbed (needs a backend).
+
+### Architecture (quick map)
+
+- `src/store.ts` — local-first Zustand store (Cognitive Score, streak, history, settings) persisted to `localStorage`.
+- `src/ai/client.ts` — BYOK Claude client (`complete` / `completeJSON`); falls back to Demo mode with no key.
+- `src/exercises/{spar,readRetain,counterPrompting}/` — one self-contained module each, conforming to `src/exercises/types.ts`.
+- `src/components/` — Today hub (daily ring + score), Settings, ExerciseHost.
+- `e2e.smoke.mjs` — Playwright end-to-end test driving every exercise in Demo mode.
+
+## The mockup
+
+`whetstone-mockup.html` is a single self-contained file (no build). Open it directly or serve with `python3 -m http.server`. It shows the original design exploration of the flows.
 
 ---
 
