@@ -133,7 +133,7 @@ try {
       'Percentage gains and losses are not symmetric: +50% then -50% multiplies by 1.5 x 0.5 = 0.75, a net 25% decline, not zero.'
     );
     await page.getByRole('button', { name: 'Lock in answer' }).click();
-    await page.getByText('The flaw', { exact: false }).waitFor({ timeout: 8000 });
+    await page.getByRole('heading', { name: 'The flaw' }).waitFor({ timeout: 8000 });
     await shot('10-cp-result');
     await page.getByRole('button', { name: 'Save rep' }).click();
     await page.locator('.score-num').first().waitFor({ timeout: 6000 });
