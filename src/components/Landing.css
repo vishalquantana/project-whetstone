@@ -1,0 +1,174 @@
+/* Landing renders outside the .app shell, so it owns its own full-width layout. */
+.landing {
+  min-height: 100vh;
+  min-height: 100dvh;
+  background: var(--mist);
+  color: var(--ink);
+}
+
+/* reveal animation (disabled globally under reduced motion via global.css) */
+[data-reveal] {
+  opacity: 0;
+  transform: translateY(18px);
+  transition: opacity 0.6s var(--ease), transform 0.6s var(--ease);
+}
+[data-reveal].revealed {
+  opacity: 1;
+  transform: none;
+}
+
+/* ---- nav ---- */
+.lr-nav {
+  position: sticky;
+  top: 0;
+  z-index: 10;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 16px clamp(20px, 5vw, 64px);
+  background: rgba(14, 61, 58, 0.85);
+  backdrop-filter: blur(10px);
+  color: var(--chalk);
+}
+.lr-wordmark {
+  font-weight: 700;
+  font-size: 18px;
+  letter-spacing: -0.01em;
+}
+.lr-links {
+  display: flex;
+  gap: clamp(14px, 3vw, 28px);
+}
+.lr-links a {
+  color: #bfe0da;
+  text-decoration: none;
+  font-size: 14px;
+  font-weight: 600;
+}
+.lr-links a:hover {
+  color: var(--coral);
+}
+
+/* ---- shared section buttons ---- */
+.lr-btn {
+  display: inline-block;
+  cursor: pointer;
+  border: 0;
+  text-decoration: none;
+  font-weight: 700;
+  font-size: 15px;
+  padding: 14px 24px;
+  border-radius: var(--radius-sm);
+  transition: 0.2s var(--ease);
+}
+.lr-btn-primary {
+  background: var(--coral);
+  color: #fff;
+}
+.lr-btn-primary:hover {
+  transform: translateY(-1px);
+  filter: brightness(1.05);
+}
+.lr-btn-ghost {
+  background: transparent;
+  color: inherit;
+  border: 1.5px solid currentColor;
+  opacity: 0.85;
+}
+.lr-btn-ghost:hover {
+  opacity: 1;
+}
+.lr-btn:focus-visible {
+  outline: 3px solid var(--coral);
+  outline-offset: 3px;
+}
+
+/* ---- hero (dark) ---- */
+.lr-hero {
+  background:
+    radial-gradient(900px 500px at 75% -10%, #15514c 0%, transparent 60%),
+    var(--petrol);
+  color: var(--chalk);
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 40px;
+  align-items: center;
+  padding: clamp(48px, 9vw, 110px) clamp(20px, 5vw, 64px) clamp(56px, 10vw, 120px);
+}
+.lr-eyebrow {
+  color: #7fd8cb;
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  margin-bottom: 18px;
+}
+.lr-h1 {
+  font-size: clamp(38px, 7vw, 68px);
+  line-height: 1.02;
+  letter-spacing: -0.02em;
+  margin-bottom: 20px;
+}
+.lr-sub {
+  font-size: clamp(16px, 2.2vw, 20px);
+  line-height: 1.55;
+  color: #cfe2de;
+  max-width: 46ch;
+  margin-bottom: 32px;
+}
+.lr-cta-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 14px;
+}
+
+.lr-hero-art {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 18px;
+}
+.lr-ring {
+  width: min(70vw, 300px);
+  height: min(70vw, 300px);
+  transform: rotate(-90deg);
+}
+.lr-ring-track {
+  fill: none;
+  stroke: #11403c;
+  stroke-width: 8;
+}
+.lr-ring-fill {
+  fill: none;
+  stroke: var(--coral);
+  stroke-width: 8;
+  stroke-linecap: round;
+  animation: lr-sweep 1.4s var(--ease) both;
+}
+@keyframes lr-sweep {
+  from {
+    stroke-dashoffset: 326.7;
+  }
+}
+.lr-ring-label {
+  text-align: center;
+  font-size: 11px;
+  letter-spacing: 0.12em;
+  color: #7fd8cb;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+.lr-ring-label b {
+  color: var(--chalk);
+  letter-spacing: 0;
+  font-size: 14px;
+}
+
+/* desktop: hero two-column */
+@media (min-width: 820px) {
+  .lr-hero {
+    grid-template-columns: 1.1fr 0.9fr;
+  }
+}
