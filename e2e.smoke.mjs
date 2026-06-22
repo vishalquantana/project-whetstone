@@ -27,15 +27,32 @@ const score = async () => {
 const shot = (n) => page.screenshot({ path: `${SHOTS}/${n}.png`, fullPage: true });
 
 try {
-  // ---- boot + reset ----
+  // ---- boot: landing gate ----
   ctxLabel = 'boot';
   await page.goto(BASE, { waitUntil: 'networkidle' });
   await page.evaluate(() => localStorage.clear());
   await page.reload({ waitUntil: 'networkidle' });
+
+  // First-time visitor lands on the marketing page (no tab bar yet).
+  await page.getByRole('button', { name: 'Start training' }).first().waitFor({ timeout: 8000 });
+  const tabBarOnLanding = await page.locator('nav.tabnav').count();
+  if (tabBarOnLanding === 0) ok('boot: landing shown first (no tab bar)');
+  else bad('boot: tab bar leaked onto landing', `count=${tabBarOnLanding}`);
+  await shot('00-landing');
+
+  // Enter the app.
+  await page.getByRole('button', { name: 'Start training' }).first().click();
   await page.locator('.score-num').first().waitFor({ timeout: 8000 });
   await shot('01-today-initial');
   const s0 = await score();
-  ok('boot: Today renders', `score=${s0}`);
+  ok('boot: Start training enters the app (Today renders)', `score=${s0}`);
+
+  // Returning visitor (entered flag persisted) skips the landing on reload.
+  await page.reload({ waitUntil: 'networkidle' });
+  await page.locator('.score-num').first().waitFor({ timeout: 8000 });
+  const landingAfterReload = await page.getByRole('button', { name: 'Start training' }).count();
+  if (landingAfterReload === 0) ok('boot: returning visitor skips the landing');
+  else bad('boot: landing re-shown to returning visitor', `count=${landingAfterReload}`);
 
   // ============ SPAR ============
   ctxLabel = 'spar';

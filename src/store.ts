@@ -22,9 +22,11 @@ export interface WhetstoneState {
   repsToday: ExerciseId[]; // exercise ids completed on lastRepDate
   history: HistoryEntry[];
   settings: Settings;
+  entered: boolean;
 
   recordRep: (exerciseId: ExerciseId, result: RepResult) => void;
   setSettings: (patch: Partial<Settings>) => void;
+  setEntered: (v: boolean) => void;
   resetData: () => void;
 }
 
@@ -50,6 +52,7 @@ const initial = {
   repsToday: [] as ExerciseId[],
   history: [] as HistoryEntry[],
   settings: { aiMode: 'demo' as AiMode, apiKey: '' },
+  entered: false,
 };
 
 export const useStore = create<WhetstoneState>()(
@@ -95,7 +98,10 @@ export const useStore = create<WhetstoneState>()(
       setSettings: (patch) =>
         set((state) => ({ settings: { ...state.settings, ...patch } })),
 
-      resetData: () => set({ ...initial, settings: { aiMode: 'demo', apiKey: '' } }),
+      setEntered: (v) => set({ entered: v }),
+
+      resetData: () =>
+        set((state) => ({ ...initial, entered: state.entered, settings: { aiMode: 'demo', apiKey: '' } })),
     }),
     {
       name: 'whetstone',
