@@ -4,6 +4,8 @@ import { Settings } from './components/Settings';
 import { ExerciseHost } from './components/ExerciseHost';
 import { getExercise } from './exercises/registry';
 import type { ExerciseModule } from './exercises/types';
+import { useStore } from './store';
+import { Landing } from './components/Landing';
 
 type Tab = 'today' | ExerciseModule['id'] | 'settings';
 
@@ -17,6 +19,20 @@ const TABS: { id: Tab; label: string; icon: string }[] = [
 
 export default function App() {
   const [tab, setTab] = useState<Tab>('today');
+
+  const entered = useStore((s) => s.entered);
+  const setEntered = useStore((s) => s.setEntered);
+
+  if (!entered) {
+    return (
+      <Landing
+        onEnter={() => {
+          setEntered(true);
+          setTab('today');
+        }}
+      />
+    );
+  }
 
   const activeExercise =
     tab === 'spar' || tab === 'read-retain' || tab === 'counter-prompting'

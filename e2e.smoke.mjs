@@ -27,15 +27,41 @@ const score = async () => {
 const shot = (n) => page.screenshot({ path: `${SHOTS}/${n}.png`, fullPage: true });
 
 try {
-  // ---- boot + reset ----
+  // ---- boot: landing gate ----
   ctxLabel = 'boot';
   await page.goto(BASE, { waitUntil: 'networkidle' });
   await page.evaluate(() => localStorage.clear());
   await page.reload({ waitUntil: 'networkidle' });
+
+  // First-time visitor lands on the marketing page (no tab bar yet).
+  await page.getByRole('button', { name: 'Start training' }).first().waitFor({ timeout: 8000 });
+  const tabBarOnLanding = await page.locator('nav.tabnav').count();
+  if (tabBarOnLanding === 0) ok('boot: landing shown first (no tab bar)');
+  else bad('boot: tab bar leaked onto landing', `count=${tabBarOnLanding}`);
+  await shot('00-landing');
+
+  // Landing content sections render.
+  {
+    const principle = await page.getByText('AI as a black-box oracle', { exact: false }).count();
+    const how = await page.getByText('Read-and-Retain', { exact: false }).count();
+    const proof = await page.getByText('Not brain-training games', { exact: false }).count();
+    if (principle > 0 && how > 0 && proof > 0) ok('landing: all sections render');
+    else bad('landing: content sections missing', `principle=${principle} how=${how} proof=${proof}`);
+  }
+
+  // Enter the app.
+  await page.getByRole('button', { name: 'Start training' }).first().click();
   await page.locator('.score-num').first().waitFor({ timeout: 8000 });
   await shot('01-today-initial');
   const s0 = await score();
-  ok('boot: Today renders', `score=${s0}`);
+  ok('boot: Start training enters the app (Today renders)', `score=${s0}`);
+
+  // Returning visitor (entered flag persisted) skips the landing on reload.
+  await page.reload({ waitUntil: 'networkidle' });
+  await page.locator('.score-num').first().waitFor({ timeout: 8000 });
+  const landingAfterReload = await page.getByRole('button', { name: 'Start training' }).count();
+  if (landingAfterReload === 0) ok('boot: returning visitor skips the landing');
+  else bad('boot: landing re-shown to returning visitor', `count=${landingAfterReload}`);
 
   // ============ SPAR ============
   ctxLabel = 'spar';
@@ -107,7 +133,7 @@ try {
       'Percentage gains and losses are not symmetric: +50% then -50% multiplies by 1.5 x 0.5 = 0.75, a net 25% decline, not zero.'
     );
     await page.getByRole('button', { name: 'Lock in answer' }).click();
-    await page.getByText('The flaw', { exact: false }).waitFor({ timeout: 8000 });
+    await page.getByRole('heading', { name: 'The flaw' }).waitFor({ timeout: 8000 });
     await shot('10-cp-result');
     await page.getByRole('button', { name: 'Save rep' }).click();
     await page.locator('.score-num').first().waitFor({ timeout: 6000 });
@@ -130,9 +156,14 @@ try {
   ctxLabel = 'settings';
   try {
     await nav('Settings').click();
-    await page.waitForTimeout(500);
+    await page.getByRole('button', { name: 'View intro' }).waitFor({ timeout: 6000 });
     await shot('12-settings');
-    ok('settings: renders');
+    // "View intro" returns the user to the landing page.
+    await page.getByRole('button', { name: 'View intro' }).click();
+    await page.getByRole('button', { name: 'Start training' }).first().waitFor({ timeout: 6000 });
+    const tabBar = await page.locator('nav.tabnav').count();
+    if (tabBar === 0) ok('settings: View intro re-shows the landing');
+    else bad('settings: tab bar still present after View intro', `count=${tabBar}`);
   } catch (e) { await shot('ERR-settings'); bad('settings', e); }
 
 } catch (e) {

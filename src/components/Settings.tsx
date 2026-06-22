@@ -13,6 +13,7 @@ export function Settings() {
   const settings = useStore((s) => s.settings);
   const setSettings = useStore((s) => s.setSettings);
   const resetData = useStore((s) => s.resetData);
+  const setEntered = useStore((s) => s.setEntered);
 
   const [keyDraft, setKeyDraft] = useState(settings.apiKey);
   const [saved, setSaved] = useState(false);
@@ -106,6 +107,14 @@ export function Settings() {
             ? 'Reduced motion is on — animations are minimised to match your system setting.'
             : 'Whetstone respects your system "reduce motion" setting automatically.'}
         </p>
+      </div>
+
+      <div className="card note-card">
+        <b className="grotesk">About Whetstone</b>
+        <p className="paid-note">Re-read what Whetstone is and the research behind it.</p>
+        <button className="btn ghost" style={{ marginTop: 8 }} onClick={() => setEntered(false)}>
+          View intro
+        </button>
       </div>
 
       <div className="spacer" />
