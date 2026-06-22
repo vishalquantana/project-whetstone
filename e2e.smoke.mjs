@@ -40,6 +40,14 @@ try {
   else bad('boot: tab bar leaked onto landing', `count=${tabBarOnLanding}`);
   await shot('00-landing');
 
+  // Landing content sections render.
+  {
+    const principle = await page.getByText('AI as a black-box oracle', { exact: false }).count();
+    const sparCard = await page.getByText('Read-and-Retain', { exact: false }).count();
+    if (principle > 0 && sparCard > 0) ok('landing: problem + how-it-works sections render');
+    else bad('landing: content sections missing', `principle=${principle} how=${sparCard}`);
+  }
+
   // Enter the app.
   await page.getByRole('button', { name: 'Start training' }).first().click();
   await page.locator('.score-num').first().waitFor({ timeout: 8000 });
