@@ -43,9 +43,10 @@ try {
   // Landing content sections render.
   {
     const principle = await page.getByText('AI as a black-box oracle', { exact: false }).count();
-    const sparCard = await page.getByText('Read-and-Retain', { exact: false }).count();
-    if (principle > 0 && sparCard > 0) ok('landing: problem + how-it-works sections render');
-    else bad('landing: content sections missing', `principle=${principle} how=${sparCard}`);
+    const how = await page.getByText('Read-and-Retain', { exact: false }).count();
+    const proof = await page.getByText('Not brain-training games', { exact: false }).count();
+    if (principle > 0 && how > 0 && proof > 0) ok('landing: all sections render');
+    else bad('landing: content sections missing', `principle=${principle} how=${how} proof=${proof}`);
   }
 
   // Enter the app.
@@ -155,9 +156,14 @@ try {
   ctxLabel = 'settings';
   try {
     await nav('Settings').click();
-    await page.waitForTimeout(500);
+    await page.getByRole('button', { name: 'View intro' }).waitFor({ timeout: 6000 });
     await shot('12-settings');
-    ok('settings: renders');
+    // "View intro" returns the user to the landing page.
+    await page.getByRole('button', { name: 'View intro' }).click();
+    await page.getByRole('button', { name: 'Start training' }).first().waitFor({ timeout: 6000 });
+    const tabBar = await page.locator('nav.tabnav').count();
+    if (tabBar === 0) ok('settings: View intro re-shows the landing');
+    else bad('settings: tab bar still present after View intro', `count=${tabBar}`);
   } catch (e) { await shot('ERR-settings'); bad('settings', e); }
 
 } catch (e) {

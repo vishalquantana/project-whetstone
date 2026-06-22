@@ -330,3 +330,85 @@
     grid-template-columns: repeat(4, 1fr);
   }
 }
+
+/* ---- proof / faq / footer (light) ---- */
+.lr-proof {
+  background: var(--mist);
+  padding: clamp(56px, 9vw, 110px) clamp(20px, 5vw, 64px) 0;
+}
+.lr-strips {
+  max-width: 1040px;
+  margin: 0 auto;
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 18px;
+}
+.lr-strip {
+  background: var(--chalk);
+  border: 1.5px solid var(--line);
+  border-radius: var(--radius);
+  padding: 24px;
+}
+.lr-strip p {
+  margin-top: 10px;
+  color: var(--graphite);
+  font-size: 14.5px;
+  line-height: 1.55;
+}
+.lr-faq {
+  max-width: 760px;
+  margin: 40px auto 0;
+}
+.lr-faq-item {
+  border-bottom: 1.5px solid var(--line);
+  padding: 16px 0;
+}
+.lr-faq-item summary {
+  cursor: pointer;
+  font-size: 17px;
+  list-style: none;
+}
+.lr-faq-item summary::-webkit-details-marker {
+  display: none;
+}
+.lr-faq-item summary::after {
+  content: '+';
+  float: right;
+  color: var(--coral);
+  font-weight: 700;
+}
+.lr-faq-item[open] summary::after {
+  content: '–';
+}
+.lr-faq-item p {
+  margin-top: 10px;
+  color: var(--graphite);
+  font-size: 14.5px;
+  line-height: 1.6;
+}
+.lr-final {
+  text-align: center;
+  padding: clamp(48px, 8vw, 90px) 0;
+}
+.lr-final .lr-btn {
+  margin-top: 8px;
+}
+.lr-footer {
+  border-top: 1.5px solid var(--line);
+  padding: 24px 0 40px;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  gap: 12px;
+  font-size: 12px;
+  color: var(--graphite-2);
+}
+.lr-sources a {
+  color: var(--graphite);
+}
+
+@media (min-width: 720px) {
+  .lr-strips {
+    grid-template-columns: 1fr 1fr;
+  }
+}

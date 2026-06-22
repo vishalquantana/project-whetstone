@@ -105,6 +105,63 @@ function HowSection() {
   );
 }
 
+const FAQ = [
+  { q: 'Do I need an API key?', a: 'No. Demo mode works with scripted content and no key. For live AI, add your own Anthropic key in Settings — it stays on your device.' },
+  { q: 'Does my data leave my device?', a: 'Your score, streak, and history are stored locally in your browser. With your own key, exercise prompts go directly from your device to Anthropic — never through our servers.' },
+  { q: 'Is this just brain-training games?', a: "No. Lumosity-style games don't transfer to real cognition. Whetstone uses methods with evidence of transfer — retrieval practice, productive struggle, and forced justification." },
+  { q: 'How long does it take?', a: 'About five minutes a day across the three reps. Consistency is the point — the streak is the product.' },
+];
+
+function ProofSection({ onEnter }: { onEnter: () => void }) {
+  return (
+    <section id="faq" className="lr-proof">
+      <div className="lr-strips">
+        <div className="lr-strip" data-reveal>
+          <div className="lr-eyebrow-dark mono">Not brain-training games</div>
+          <p>
+            Brain-training apps don't transfer to real-world thinking. Whetstone trains the
+            specific eroding skills with methods that have evidence of transfer.
+          </p>
+        </div>
+        <div className="lr-strip" data-reveal>
+          <div className="lr-eyebrow-dark mono">Private by default</div>
+          <p>
+            Local-first. Bring your own key or stay in Demo mode. Nothing about your reps
+            leaves your browser.
+          </p>
+        </div>
+      </div>
+
+      <div className="lr-faq" data-reveal>
+        {FAQ.map((f) => (
+          <details key={f.q} className="lr-faq-item">
+            <summary className="grotesk">{f.q}</summary>
+            <p>{f.a}</p>
+          </details>
+        ))}
+      </div>
+
+      <div className="lr-final" data-reveal>
+        <h2 className="lr-h2 grotesk">Keep your edge.</h2>
+        <button className="lr-btn lr-btn-primary grotesk" onClick={onEnter}>
+          Start training
+        </button>
+      </div>
+
+      <footer className="lr-footer">
+        <span className="mono">Whetstone — keep the edge AI is dulling.</span>
+        <span className="lr-sources mono">
+          Sources:{' '}
+          <a href="https://arxiv.org/abs/2506.08872" target="_blank" rel="noreferrer">MIT</a>{' · '}
+          <a href="https://www.microsoft.com/en-us/research/wp-content/uploads/2025/01/lee_2025_ai_critical_thinking_survey.pdf" target="_blank" rel="noreferrer">Microsoft/CMU</a>{' · '}
+          <a href="https://www.sciencedirect.com/science/article/pii/S2451958826001764" target="_blank" rel="noreferrer">ScienceDirect</a>{' · '}
+          <a href="https://www.nature.com/scitable/blog/mind-read/braintraining_apps_neuroscience_or_pseudoscience/" target="_blank" rel="noreferrer">Nature</a>
+        </span>
+      </footer>
+    </section>
+  );
+}
+
 function CognitiveRing() {
   const r = 52;
   const c = 2 * Math.PI * r;
@@ -164,6 +221,7 @@ export function Landing({ onEnter }: Props) {
       </section>
       <ProblemSection />
       <HowSection />
+      <ProofSection onEnter={onEnter} />
     </div>
   );
 }
